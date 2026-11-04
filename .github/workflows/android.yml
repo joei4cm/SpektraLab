@@ -1,0 +1,61 @@
+# Does the Android MVP produce an installable debug APK from a clean checkout?
+#
+# Mirrors build.yml's intent for the Android port: a hosted Linux runner has no
+# phone and no GPU, so this does not run the app -- it proves the engine
+# cross-compiles for arm64 + x86_64, the kernels compile to SPIR-V, the assets
+# stage, and the APK packages. The .apk is uploaded as an artifact.
+
+name: Android
+
+on:
+  push:
+    branches: [Windows_Linux]
+    paths:
+      - 'android/**'
+      - 'engine/**'
+      - '.github/workflows/android.yml'
+  pull_request:
+    paths:
+      - 'android/**'
+      - 'engine/**'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK + NDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK packages
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" \
+            "build-tools;34.0.0" "ndk;26.3.11579264" "cmake;3.22.1"
+
+      - name: glslangValidator (SPIR-V compiler)
+        run: sudo apt-get update && sudo apt-get install -y glslang-tools
+
+      - name: Assemble debug APK
+        working-directory: android
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: filmprint-lab-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
