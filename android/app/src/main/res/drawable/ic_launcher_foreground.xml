@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A plain, generic film-frame mark. Deliberately NOT the SpektraLab icon:
+     FilmPrint Lab is an unofficial community build. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#F4F1EA"
+        android:pathData="M34,38 h40 a4,4 0 0 1 4,4 v24 a4,4 0 0 1 -4,4 h-40 a4,4 0 0 1 -4,-4 v-24 a4,4 0 0 1 4,-4 z" />
+    <path
+        android:fillColor="#1C2B3A"
+        android:pathData="M39,44 h30 v16 h-30 z" />
+    <path
+        android:fillColor="#E8A13A"
+        android:pathData="M44,48 h20 v8 h-20 z" />
+    <path
+        android:fillColor="#1C2B3A"
+        android:pathData="M33,40 h2 v2 h-2 z M33,45 h2 v2 h-2 z M33,50 h2 v2 h-2 z M33,55 h2 v2 h-2 z M33,60 h2 v2 h-2 z M33,65 h2 v2 h-2 z M73,40 h2 v2 h-2 z M73,45 h2 v2 h-2 z M73,50 h2 v2 h-2 z M73,55 h2 v2 h-2 z M73,60 h2 v2 h-2 z M73,65 h2 v2 h-2 z" />
+</vector>
