@@ -93,6 +93,25 @@ Install and run:
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
+## Releases (GitHub Release with the APK attached)
+
+A second workflow, [`.github/workflows/android-release.yml`](../.github/workflows/android-release.yml),
+builds the debug APK and publishes it as a **GitHub Release asset** on this fork.
+
+- **Tag a release:** push a tag matching `android-v*` or `v*` and the workflow
+  builds and attaches `FilmPrintLab-<tag>-debug.apk`:
+
+  ```bash
+  git tag android-v0.1.0 && git push origin android-v0.1.0
+  ```
+
+- **Manual:** Actions → *Android Release* → *Run workflow*, give it a tag name
+  (the tag is created at the chosen commit).
+
+The release is marked a pre-release and the APK is debug-signed (not for
+production). The same file is also kept as a workflow artifact. It needs
+`contents: write`, which the workflow requests via `permissions`.
+
 ## Notes, limits and gaps
 
 - **Vulkan required at run time.** The device/emulator needs a Vulkan 1.0
