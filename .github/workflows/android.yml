@@ -4,6 +4,10 @@
 # phone and no GPU, so this does not run the app -- it proves the engine
 # cross-compiles for arm64 + x86_64, the kernels compile to SPIR-V, the assets
 # stage, and the APK packages. The .apk is uploaded as an artifact.
+#
+# Uses the Android SDK preinstalled on ubuntu-latest. Do NOT use
+# android-actions/setup-android's default packages: they still ask for the
+# obsolete `tools` package and fail with "Failed to find package 'tools'".
 
 name: Android
 
@@ -38,12 +42,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Android SDK + NDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install SDK packages
+      - name: Install Android SDK packages (NDK, platform, CMake)
         run: |
-          sdkmanager "platform-tools" "platforms;android-34" \
+          set -euo pipefail
+          SDKROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDKROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDKROOT" >> "$GITHUB_ENV"
+          SM=$(ls -d "$SDKROOT"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)
+          echo "sdkmanager=$SM"
+          yes | "$SM" --licenses >/dev/null || true
+          "$SM" "platform-tools" "platforms;android-34" \
             "build-tools;34.0.0" "ndk;26.3.11579264" "cmake;3.22.1"
 
       - name: glslangValidator (SPIR-V compiler)
